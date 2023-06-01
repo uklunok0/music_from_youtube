@@ -30,8 +30,7 @@ app.post("/", (req, res) => {
   console.log("ID video: ", videoId);
 
   let stream = ytdl(link, { quality: "highestaudio" });
-
-  ffmpeg.setFfmpegPath("C:/ffmpeg/bin/ffmpeg.exe");
+  ffmpeg.setFfmpegPath("C:/JS-PROGECTS/mp3_from_youtube/ffmpeg/bin/ffmpeg.exe");
   let start = Date.now();
   ffmpeg(stream)
     .audioBitrate(320)
@@ -44,8 +43,7 @@ app.post("/", (req, res) => {
     })
     .on("end", () => {
       console.log(`\ndone, thanks - ${(Date.now() - start) / 1000}s`);
-
-      res.send("POST request received!");
+      res.send(`\ndone, thanks - ${(Date.now() - start) / 1000}s`);
     });
 });
 
