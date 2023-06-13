@@ -1,3 +1,6 @@
 ffmpeg/
+node_modules/
+tmp_from_youtube/
 testParse.js
 test.js
+index1.js

@@ -5,6 +5,7 @@ const ffmpeg = require("fluent-ffmpeg");
 const readline = require("readline");
 const axios = require("axios");
 const cheerio = require("cheerio");
+const path = require("path");
 
 const app = express();
 const port = 3000;
@@ -13,25 +14,25 @@ const port = 3000;
 
 let linkYoutube = "";
 
+// обработчик GET-запроса на index.html
 app.get("/", (req, res) => {
-  const form = `
-  <form method="post" action="/">
-  <label for="name">Name:</label>
-  <input type="text" id="name" name="name"><br><br>
-  <button type="submit">Send Message</button>
-  </form>
-  `;
-  res.send(form);
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
+// используем middleware body-parser для обработки POST-запросов
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+// обработчик POST-запроса на сервер
 app.post("/", (req, res) => {
-  let link = req.body.name; // содержит введённые данные в форму
+  let link = req.body.nameInput; // содержит введённые данные в форму
+  if (!link) {
+    res.status(400).send("Данные не введены");
+    return;
+  }
   console.log(link);
   let videoId = ytdl.getURLVideoID(link);
-  console.log("ID video: ", videoId);
+  console.log("ID video:", videoId);
 
   const getTitle = async (link) => {
     // ф-ция получения названия файла
@@ -48,6 +49,7 @@ app.post("/", (req, res) => {
 
   setTimeout(function () {
     // задержка обработки запроса
+
     let stream = ytdl(link, { quality: "highestaudio" }); // получить видеопоток по ссылке
     ffmpeg.setFfmpegPath(
       "C:/JS-PROGECTS/mp3_from_youtube/ffmpeg/bin/ffmpeg.exe"
@@ -71,5 +73,5 @@ app.post("/", (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Сервер запущен на http://localhost:${port}`);
+  console.log(`Сервер запущен на http://localhost:${port}. Listening...`);
 });
