@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <title>Music-From-YouTube</title>
+  </head>
+  <body>
+    <div class="wrapper">
+      <%- include ("blocks/header.ejs") %>
+      <div tabindex="-1" class="main-div">
+        <form action="/" method="post" name="main" class="main-form">
+          <div class="main-form__column">
+            <div class="main-form__item">
+              <label for="name" class="main-form__label">Введите URL</label>
+              <input
+                tabindex="1"
+                value=""
+                id="name"
+                type="text"
+                name="nameInput"
+                class="main-form__input"
+                autocomplete="on"
+                placeholder="http://..."
+              />
+            </div>
+          </div>
+          <div class="main-form__column">
+            <button type="submit" class="main-form__button">Отправить</button>
+          </div>
+          <div class="message">
+            <h4><%=downloadComplete %></h4>
+          </div>
+        </form>
+      </div>
+    </div>
+    <script src="server.js"></script>
+  </body>
+</html>

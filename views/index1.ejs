@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- <script src="server.js"></script> -->
+    <title>remove demo!!!</title>
+    <style>
+      p {
+        background: yellow;
+        margin: 6px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <p>Hello</p>
+    how are
+    <p>you?</p>
+
+    <form id="myForm" action="/" method="POST" name="main" class="main-form">
+      <input
+        tabindex="1"
+        value=""
+        id="nameInput"
+        type="text"
+        name="nameInput"
+        class="main-form__input"
+        autocomplete="on"
+        placeholder="http://..."
+      />
+
+      <button type="submit" id="submitButton">
+        Call remove() on paragraphs
+      </button>
+    </form>
+
+    <label for="name" class="main-form__label">Введите URL</label>
+    <p>
+      <label for="name" id="additional-data">TEST</label>
+    </p>
+
+    <div id="result"></div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        $("#myForm").submit(function (event) {
+          event.preventDefault();
+          console.log("ffff");
+          let name = $("#nameInput").val();
+
+          $.ajax({
+            url: "/",
+            type: "POST",
+            // dataType: "json",
+            data: { name: name },
+            success: function (response) {
+              $("#result").html(response);
+            },
+            error: function (xhr, status, error) {
+              console.log(xhr);
+              console.log(status);
+              console.log(error);
+            },
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
