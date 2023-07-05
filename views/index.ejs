@@ -5,6 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
     <title>Music-From-YouTube</title>
   </head>
   <body>
@@ -44,33 +46,6 @@
         </form>
       </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-
-    <script>
-      // получить элементы формы
-      const form = document.querySelector("#getLink");
-      const nameInput = document.querySelector("#nameInput");
-      let result = document.querySelector("#result");
-
-      // обработчик отправки формы
-      form.addEventListener("submit", (e) => {
-        e.preventDefault(); // отменить стандартное поведение формы
-        const data = {
-          name: nameInput.value,
-        };
-        axios
-          .post("/", data) // отправить данные на сервер
-          .then((response) => {
-            console.log(response.data); // вывести ответ сервера в консоль
-            if (result && response.data) {
-              result.innerHTML = response.data;
-            }
-          })
-          .catch((error) => {
-            console.error(error); // обработать возможные ошибки при отправке данных
-          });
-      });
-    </script>
+    <script src="/dynamicMessage.js"></script>
   </body>
 </html>

@@ -6,6 +6,7 @@ const readline = require("readline");
 const axios = require("axios");
 const cheerio = require("cheerio");
 const path = require("path");
+const { log } = require("console");
 
 const app = express();
 const port = 3000;
@@ -14,7 +15,6 @@ const port = 3000;
 //const url = "http://localhost:3000";
 
 let linkYoutube = "";
-let validate;
 
 app.set("view engine", "ejs");
 
@@ -31,18 +31,24 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // обработчик POST-запроса на сервер
-
 app.post("/", (req, res) => {
   let link = req.body.name; // содержит введённые данные в форму
+  const dataCut = link.substring(0, 12);
+  if (dataCut == "www.youtube.") {
+    // привести url к стандарту
+    link = "https://" + link;
+  }
 
   function validateUrl(data) {
     // ф-ция проверки корректного ввода данных в форму
-    validate = 0;
+    let validate = 0;
     if (!data) {
       //res.render("code400.ejs");
       let responseHTML = "Данные не введены!";
-      res.send(responseHTML);
 
+      setTimeout(() => {
+        res.send(responseHTML); // задержка вывода сообщения
+      }, 100);
       return false;
     }
 
@@ -50,7 +56,23 @@ app.post("/", (req, res) => {
     if (!isUrlValid) {
       //res.render("code404.ejs");
       responseHTML = "Некорректный URL!";
-      res.send(responseHTML);
+
+      setTimeout(() => {
+        res.send(responseHTML); // задержка вывода сообщения
+      }, 100);
+      return false;
+    }
+
+    const notYouTubeLink = data.substring(0, 20);
+    if (
+      notYouTubeLink !== "https://www.youtube." &&
+      notYouTubeLink !== "https://youtube.com/"
+    ) {
+      responseHTML = "Это не ссылка YouTube!";
+
+      setTimeout(() => {
+        res.send(responseHTML); // задержка вывода сообщения
+      }, 100);
       return false;
     }
 
@@ -58,9 +80,11 @@ app.post("/", (req, res) => {
     let videoId = ytdl.getURLVideoID(data);
     console.log("ID video:", videoId);
     validate++;
+    return validate;
   }
 
-  validateUrl(link);
+  let validate = validateUrl(link);
+  console.log(validate);
 
   const getTitle = async (link) => {
     // ф-ция получения названия файла
@@ -75,17 +99,26 @@ app.post("/", (req, res) => {
     }
   };
 
-  if (validate == 1) getTitle(link);
-  else return false;
+  if (validate == 1) {
+    getTitle(link); // выполнять только после проверки введённых данных
+  } else return false;
 
   setTimeout(() => {
     console.log(linkYoutube);
     const responseHTML = `Название видео:<br>${linkYoutube}`;
 
     res.send(responseHTML); // отправить данные в форму в div #result
-  }, 1500);
+  }, 1750);
+});
 
-  /*const getStream = async (link, linkYoutube) => {
+app.post("/data", (req, res) => {
+  let link = req.body.name; // содержит введённые данные в форму
+  const dataCut = link.substring(0, 12);
+  if (dataCut == "www.youtube.") {
+    link = "http://" + link;
+  }
+
+  const getStream = async (link, linkYoutube) => {
     // ф-ция получения и обработки видеопотока
 
     try {
@@ -106,21 +139,18 @@ app.post("/", (req, res) => {
         })
         .on("end", () => {
           console.log(`\ndone, thanks - ${(Date.now() - start) / 1000}s`);
-          //res.send(`\ndone, thanks - ${(Date.now() - start) / 1000}s`);
-          res.render("downloadComplete.ejs", {
-            downloadComplete: `\ndone, thanks - ${
-              (Date.now() - start) / 1000
-            }s`,
-          });
+          responseHTML = `\ndone, thanks - ${(Date.now() - start) / 1000}s`;
+          res.send(responseHTML);
+
+          // res.render("downloadComplete.ejs", {
+          //   downloadComplete: responseHTML,
+          // });
         });
     } catch (error) {
       console.log(error);
     }
   };
-
-  setTimeout(function () {
-    getStream(link, linkYoutube);
-  }, 2000); */
+  getStream(link, linkYoutube);
 });
 
 app.listen(port, () => {
