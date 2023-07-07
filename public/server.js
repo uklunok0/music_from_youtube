@@ -3,10 +3,10 @@ const bodyParser = require("body-parser");
 const ytdl = require("ytdl-core");
 const ffmpeg = require("fluent-ffmpeg");
 const readline = require("readline");
-const axios = require("axios");
-const cheerio = require("cheerio");
-const path = require("path");
 const { log } = require("console");
+
+const getTitle = require("./getTitleVideo");
+const validateUrl = require("./validateURL");
 
 const app = express();
 const port = 3000;
@@ -14,7 +14,7 @@ const port = 3000;
 //link = "https://www.youtube.com/watch?v=UMER76w9ew8";
 //const url = "http://localhost:3000";
 
-let linkYoutube = "";
+//let linkYoutube = "";
 
 app.set("view engine", "ejs");
 
@@ -39,76 +39,22 @@ app.post("/", (req, res) => {
     link = "https://" + link;
   }
 
-  function validateUrl(data) {
-    // ф-ция проверки корректного ввода данных в форму
-    let validate = 0;
-    if (!data) {
-      //res.render("code400.ejs");
-      let responseHTML = "Данные не введены!";
+  let validate = validateUrl(link); // проверить введённый URL
 
-      setTimeout(() => {
-        res.send(responseHTML); // задержка вывода сообщения
-      }, 100);
-      return false;
-    }
+  if (validate !== 1) {
+    const responseHTML = validate;
+    setTimeout(() => {
+      res.send(responseHTML); // отправить данные в форму в div #result
+    }, 100);
+  } else {
+    let linkYoutube = getTitle(link); // выполнять только после проверки введённых данных, ф-ция получения названия
 
-    const isUrlValid = /^https?:\/\/[\w\-]+(\.[\w\-]+)+[/#?]?.*$/i.test(data); // проверяем, соответствует ли переданный URL стандартам URL
-    if (!isUrlValid) {
-      //res.render("code404.ejs");
-      responseHTML = "Некорректный URL!";
-
-      setTimeout(() => {
-        res.send(responseHTML); // задержка вывода сообщения
-      }, 100);
-      return false;
-    }
-
-    const notYouTubeLink = data.substring(0, 20);
-    if (
-      notYouTubeLink !== "https://www.youtube." &&
-      notYouTubeLink !== "https://youtube.com/"
-    ) {
-      responseHTML = "Это не ссылка YouTube!";
-
-      setTimeout(() => {
-        res.send(responseHTML); // задержка вывода сообщения
-      }, 100);
-      return false;
-    }
-
-    console.log(data);
-    let videoId = ytdl.getURLVideoID(data);
-    console.log("ID video:", videoId);
-    validate++;
-    return validate;
-  }
-
-  let validate = validateUrl(link);
-  console.log(validate);
-
-  const getTitle = async (link) => {
-    // ф-ция получения названия файла
-    try {
-      const response = await axios.get(link);
-      const $ = cheerio.load(response.data);
-      linkYoutube = $("title").text().replace(" - YouTube", "");
+    linkYoutube.then((linkYoutube) => {
       console.log(linkYoutube);
-      return false;
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  if (validate == 1) {
-    getTitle(link); // выполнять только после проверки введённых данных
-  } else return false;
-
-  setTimeout(() => {
-    console.log(linkYoutube);
-    const responseHTML = `Название видео:<br>${linkYoutube}`;
-
-    res.send(responseHTML); // отправить данные в форму в div #result
-  }, 1750);
+      const responseHTML = `Название видео:<br>${linkYoutube}`;
+      res.send(responseHTML); // отправить данные в форму в div #result
+    });
+  }
 });
 
 app.post("/data", (req, res) => {
