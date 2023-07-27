@@ -25,6 +25,7 @@ function validateUrl(data) {
 
   validate++;
   console.log(validate);
+
   return validate;
 }
 

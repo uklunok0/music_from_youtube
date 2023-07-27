@@ -11,6 +11,7 @@ const getTitle = async (link) => {
     return linkYoutube;
   } catch (error) {
     console.log(error);
+    return 0;
   }
 };
 
