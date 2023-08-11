@@ -11,6 +11,7 @@
   </head>
   <body>
     <div class="wrapper">
+      <h1>Скачать музыку с YouTube в лучшем качестве</h1>
       <div tabindex="-1" class="main-div">
         <form
           id="getLink"
@@ -22,7 +23,7 @@
           <div class="main-form__column">
             <div class="main-form__item">
               <label for="nameInput" class="main-form__label"
-                >Введите URL</label
+                >Введите ссылку на видео YouTube и получите mp3!</label
               >
               <input
                 tabindex="1"
@@ -42,13 +43,17 @@
             </button>
           </div>
           <p></p>
-          <div class="message" id="result"></div>
+          <!-- <div class="message" id="result"></div> -->
+          <div id="container"></div>
           <br />
           <p></p>
           <div class="message" id="status"></div>
           <br />
         </form>
-        <a href="/download">Download</a>
+        <a class="hidden-link" href="/download" download="">Download</a>
+        <!-- <a href="/download?link=https://www.youtube.com/watch?v=UMER76w9ew8" -->
+        <!-- >Download</a -->
+        <!-- > -->
       </div>
     </div>
     <script src="/dynamicMessage.js"></script>

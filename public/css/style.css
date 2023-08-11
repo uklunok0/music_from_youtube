@@ -10,7 +10,8 @@ body {
 
 .wrapper {
   padding: 50px;
-  margin-top: 250px;
+  margin-top: 50px;
+  text-align: center;
 }
 
 .main-div {
@@ -85,14 +86,19 @@ input:hover {
 }
 
 .message {
-  display: flex;
   justify-content: center;
   align-items: center;
   height: 100%;
   text-align: center;
   min-width: 100px;
   max-width: 700px;
-  color: rgb(227, 110, 110);
+  color: rgb(222, 234, 55);
+  background-color: rgba(169, 193, 213, 0.757);
+  padding: 10px;
+  font-size: 24px;
+  border: 2px solid #111;
+  border-radius: 5px;
+
   /* user-select: none; */
 }
 
@@ -115,4 +121,7 @@ li {
 .link-return {
   color: aquamarine;
   font-kerning: normal;
+}
+.hidden-link {
+  display: none;
 }

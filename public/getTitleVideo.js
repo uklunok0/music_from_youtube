@@ -6,11 +6,10 @@ const getTitle = async (link) => {
   try {
     const response = await axios.get(link);
     const $ = cheerio.load(response.data);
-    linkYoutube = $("title").text().replace(" - YouTube", "");
-    //console.log(linkYoutube);
-    return linkYoutube;
+    videoTitle = $("title").text().replace(" - YouTube", "");
+    return videoTitle;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return 0;
   }
 };

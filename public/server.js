@@ -3,22 +3,18 @@ const bodyParser = require("body-parser");
 const ytdl = require("ytdl-core");
 const ffmpeg = require("fluent-ffmpeg");
 const readline = require("readline");
-const { log } = require("console");
+const { log, error } = require("console");
 const path = require("path");
+const fs = require("fs");
 
 const validateUrl = require("./validateURL");
 const getTitle = require("./getTitleVideo");
-const getFileSize = require("./getSizeVideoFile");
+const getVideoInfo = require("./getVideoInfo");
 
 const app = express();
 const port = 3000;
 
-//link = "https://www.youtube.com/watch?v=UMER76w9ew8";
-//const url = "http://localhost:3000";
-
-//let linkYoutube = "";
-
-const fileName = "test.jpg";
+//let videoTitle = "";
 
 app.set("view engine", "ejs");
 
@@ -29,8 +25,6 @@ app.get("/", (req, res) => {
 
 // Подключение статической папки
 app.use(express.static("public"));
-
-let filePath = path.join(__dirname, "files", fileName);
 
 // используем middleware body-parser для обработки POST-запросов
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -54,13 +48,23 @@ app.post("/", (req, res) => {
     }, 100);
   } else {
     async function getInfoFile() {
-      const linkYoutube = await getTitle(link); // выполнять только после проверки введённых данных, ф-ция получения названия
+      const videoTitle = await getTitle(link); // выполнять только после проверки введённых данных, ф-ция получения названия
+      if (!videoTitle) {
+        const responseHTML = "Попробуйте что-нибудь другое ☹";
+        res.send(responseHTML);
+      } else {
+        const infoFile = await getVideoInfo(link); // выполнять только после проверки введённых данных, ф-ция получения размер
+        console.log(infoFile);
 
-      const fileSize = await getFileSize(link); // выполнять только после проверки введённых данных, ф-ция получения размер
+        if (infoFile[2] > 140) {
+          const responseHTML = "Файл много весит, скачайте другое ☹";
+          res.send(responseHTML);
+        } else {
+          const responseHTML = `Название видео:<br>${videoTitle}<br>Размер файла:<br>~ ${infoFile[0]} кбайт<br>Длительность:<br>${infoFile[2]}min ${infoFile[3]}s<br><img src ="${infoFile[1]}"/>`;
 
-      const responseHTML = `Название видео:<br>${linkYoutube}<br>Размер файла:<br>${fileSize} байт`;
-      //res.send(responseHTML); // отправить данные в форму в div #result
-      res.send(responseHTML);
+          res.send(responseHTML); // отправить данные в форму в div #result
+        }
+      }
     }
     getInfoFile();
   }
@@ -78,21 +82,22 @@ app.post("/data", (req, res) => {
     link = "http://" + link;
   }
 
-  const getStream = async (link, linkYoutube) => {
+  const getStream = async (link) => {
     // ф-ция получения и обработки видеопотока
 
     try {
       let stream = await ytdl(link, { quality: "highestaudio" }); // получить видеопоток по ссылке
-      ffmpeg.setFfmpegPath(
-        "C:/JS-PROGECTS/mp3_from_youtube/ffmpeg/bin/ffmpeg.exe"
+      ffmpeg.setFfmpegPath("./ffmpeg/bin/ffmpeg.exe");
+
+      const currentPath = path.join(
+        __dirname,
+        "Downloads",
+        `${randomName}.mp3`
       );
       let start = Date.now();
       ffmpeg(stream) // преобразование видеопотока в *mp3
         .audioBitrate(320)
-        .save(
-          "C:/JS-PROGECTS/mp3_from_youtube/tmp_from_youtube/" +
-            `${linkYoutube}.mp3`
-        )
+        .save(currentPath)
         .on("progress", (p) => {
           readline.cursorTo(process.stdout, 0); // перемещает курсор в начало строки
           process.stdout.write(`${p.targetSize}kb downloaded`);
@@ -101,24 +106,75 @@ app.post("/data", (req, res) => {
           console.log(`\ndone, thanks - ${(Date.now() - start) / 1000}s`);
           responseHTML = `\ndone, thanks - ${(Date.now() - start) / 1000}s`;
           res.send(responseHTML);
-
-          // res.render("downloadComplete.ejs", {
-          //   downloadComplete: responseHTML,
-          // });
         });
     } catch (error) {
-      console.log(error);
+      console.error("Ошибка при скачивании файла:", error);
     }
   };
-  getStream(link, linkYoutube);
+
+  getStream(link);
 });
 
-app.get("/download", (req, res) => {
-  //filePath = req.query.path;
+app.get("/download", async (req, res) => {
+  const currentPath = path.join(__dirname, "Downloads", `${randomName}.mp3`);
 
-  res.download(filePath);
-  console.log(filePath);
+  res.download(currentPath, `${videoTitle}.mp3`, function (err) {
+    if (err) {
+      console.error("Ошибка при скачивании файла:", err);
+    } else {
+      fs.unlink(currentPath, function (err) {
+        if (err) {
+          console.error("Ошибка при удалении файла:", err);
+        } else {
+          console.log("Файл успешно удалён");
+        }
+      });
+    }
+  });
+
+  /* ffmpeg.setFfmpegPath("./ffmpeg/bin/ffmpeg.exe");
+  const link = req.query.link;
+
+  try {
+    const info = await ytdl.getInfo(link);
+    const format = ytdl.chooseFormat(info.formats, {
+      filter: "audioonly",
+      quality: "highestaudio",
+    });
+
+    const stream = ytdl.downloadFromInfo(info, { format: format });
+
+    ffmpeg(stream)
+      .output("output.mp3") // здесь можно задать другое имя выходного файла
+      .on("end", () => {
+        const file = fs.createReadStream("output.mp3");
+        res.setHeader(
+          "Content-Disposition",
+          'attachment; filename="output.mp3"'
+        );
+        file.pipe(res);
+      })
+      .run();
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("An error occurred");
+  } */
 });
+
+//функция создания случайного имени файла
+function generateRandomName() {
+  const alphabet = "abcdefghijklmnopqrstuvwxyz";
+  let name = "";
+
+  for (let i = 0; i < 5; i++) {
+    const randomIndex = Math.floor(Math.random() * alphabet.length);
+    name += alphabet[randomIndex];
+  }
+
+  return name;
+}
+const randomName = generateRandomName();
+console.log(randomName);
 
 app.listen(port, () => {
   console.log(`Сервер запущен на http://localhost:${port}. Listening...`);
