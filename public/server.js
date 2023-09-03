@@ -48,22 +48,26 @@ app.post("/", (req, res) => {
     }, 100);
   } else {
     async function getInfoFile() {
-      const videoTitle = await getTitle(link); // выполнять только после проверки введённых данных, ф-ция получения названия
-      if (!videoTitle) {
-        const responseHTML = "Попробуйте что-нибудь другое ☹";
-        res.send(responseHTML);
-      } else {
-        const infoFile = await getVideoInfo(link); // выполнять только после проверки введённых данных, ф-ция получения размер
-        console.log(infoFile);
-
-        if (infoFile[2] > 140) {
-          const responseHTML = "Файл много весит, скачайте другое ☹";
+      try {
+        const videoTitle = await getTitle(link); // выполнять только после проверки введённых данных, ф-ция получения названия
+        if (!videoTitle) {
+          const responseHTML = "Попробуйте что-нибудь другое ☹";
           res.send(responseHTML);
         } else {
-          const responseHTML = `Название видео:<br>${videoTitle}<br>Размер файла:<br>~ ${infoFile[0]} кбайт<br>Длительность:<br>${infoFile[2]}min ${infoFile[3]}s<br><img src ="${infoFile[1]}"/>`;
+          const infoFile = await getVideoInfo(link); // выполнять только после проверки введённых данных, ф-ция получения размер
+          console.log(infoFile);
 
-          res.send(responseHTML); // отправить данные в форму в div #result
+          if (infoFile[2] > 140) {
+            const responseHTML = "Файл много весит, скачайте другой ☹";
+            res.send(responseHTML);
+          } else {
+            const responseHTML = `Название видео:<br>${videoTitle}<br>Размер файла:<br>~ ${infoFile[0]} кбайт<br>Длительность:<br>${infoFile[2]}min ${infoFile[3]}s<br><img src ="${infoFile[1]}" style="width: 225px; height: 125px;"/>`;
+
+            res.send(responseHTML); // отправить данные в форму в div #result
+          }
         }
+      } catch (error) {
+        console.error(error);
       }
     }
     getInfoFile();
@@ -104,7 +108,9 @@ app.post("/data", (req, res) => {
         })
         .on("end", () => {
           console.log(`\ndone, thanks - ${(Date.now() - start) / 1000}s`);
-          responseHTML = `\ndone, thanks - ${(Date.now() - start) / 1000}s`;
+          responseHTML = `\nФайл успешно скачан, затрачено времени - ${
+            (Date.now() - start) / 1000
+          }s`;
           res.send(responseHTML);
         });
     } catch (error) {

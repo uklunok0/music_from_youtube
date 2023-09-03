@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <title>Music-From-YouTube</title>
+
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="favicon_io/apple-touch-icon.png"
+    />
+    <link
+      rel="android-chrome-192x192"
+      sizes="192x192"
+      href="favicon_io/android-chrome-192x192.png"
+    />
+    <link
+      rel="android-chrome-512x512"
+      sizes="512x512"
+      href="favicon_io/android-chrome-512x512.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="favicon_io/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="favicon_io/favicon-16x16.png"
+    />
+    <link
+      rel="shortcut icon"
+      href="favicon_io/favicon.ico"
+      type="image/x-icon"
+    />
+    <link rel="manifest" href="favicon_io/site.webmanifest" />
+  </head>
+  <body>
+    <div class="wrapper">
+      <h1>Скачать музыку с YouTube в лучшем качестве</h1>
+      <div tabindex="-1" class="main-div">
+        <form
+          id="getLink"
+          action="/"
+          method="post"
+          name="main"
+          class="main-form"
+        >
+          <div class="main-form__column">
+            <div class="main-form__item">
+              <label for="nameInput" class="main-form__label"
+                >Введите ссылку на видео YouTube и получите mp3!</label
+              >
+              <input
+                tabindex="1"
+                value=""
+                id="nameInput"
+                type="text"
+                name="name"
+                class="main-form__input"
+                autocomplete="on"
+                placeholder="http://..."
+              />
+            </div>
+          </div>
+          <div class="main-form__column">
+            <button type="submit" id="submitButton" class="main-form__button">
+              Отправить
+            </button>
+          </div>
+          <p></p>
+          <div class="message" id="result"></div>
+          <!-- <div id="container"></div> -->
+          <br />
+          <p></p>
+          <div id="status"></div>
+          <br />
+          <br />
+
+          <a
+            class="prompt"
+            id="arrow"
+            href="/"
+            style="
+              color: rgb(116, 116, 205);
+              font-size: 20px;
+              text-decoration: none;
+            "
+            >Вернуться</a
+          >
+        </form>
+        <a class="hidden-link" href="/download" download="">Download</a>
+        <!-- <a href="/download?link=https://www.youtube.com/watch?v=UMER76w9ew8" -->
+        <!-- >Download</a -->
+        <!-- > -->
+      </div>
+    </div>
+    <script src="/dynamicMessage.js"></script>
+  </body>
+</html>

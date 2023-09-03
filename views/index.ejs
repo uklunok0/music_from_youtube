@@ -1,61 +1,134 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" type="text/css" href="css/style.css" />
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-
     <title>Music-From-YouTube</title>
+
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="favicon_io/apple-touch-icon.png"
+    />
+    <link
+      rel="android-chrome-192x192"
+      sizes="192x192"
+      href="favicon_io/android-chrome-192x192.png"
+    />
+    <link
+      rel="android-chrome-512x512"
+      sizes="512x512"
+      href="favicon_io/android-chrome-512x512.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="favicon_io/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="favicon_io/favicon-16x16.png"
+    />
+    <link
+      rel="shortcut icon"
+      href="favicon_io/favicon.ico"
+      type="image/x-icon"
+    />
+    <link rel="manifest" href="favicon_io/site.webmanifest" />
   </head>
   <body>
-    <div class="wrapper">
-      <h1>Скачать музыку с YouTube в лучшем качестве</h1>
-      <div tabindex="-1" class="main-div">
-        <form
-          id="getLink"
-          action="/"
-          method="post"
-          name="main"
-          class="main-form"
-        >
-          <div class="main-form__column">
-            <div class="main-form__item">
-              <label for="nameInput" class="main-form__label"
-                >Введите ссылку на видео YouTube и получите mp3!</label
-              >
-              <input
-                tabindex="1"
-                value=""
-                id="nameInput"
-                type="text"
-                name="name"
-                class="main-form__input"
-                autocomplete="on"
-                placeholder="http://..."
-              />
-            </div>
+    <header class="header">
+      <div class="wrapper">
+        <div class="header__wrapper">
+          <div class="header__text">
+            <a href="/" class="header__text"
+              >Скачать музыку с YouTube в лучшем качестве!</a
+            >
           </div>
-          <div class="main-form__column">
-            <button type="submit" id="submitButton" class="main-form__button">
-              Отправить
-            </button>
-          </div>
-          <p></p>
-          <!-- <div class="message" id="result"></div> -->
-          <div id="container"></div>
-          <br />
-          <p></p>
-          <div class="message" id="status"></div>
-          <br />
-        </form>
-        <a class="hidden-link" href="/download" download="">Download</a>
-        <!-- <a href="/download?link=https://www.youtube.com/watch?v=UMER76w9ew8" -->
-        <!-- >Download</a -->
-        <!-- > -->
+          <nav class="header__nav">
+            <ui class="header__list">
+              <li class="header__item">
+                <a href="#!" class="header__link">Войти</a>
+              </li>
+              <li class="header__item">
+                <a href="#!" class="header__link">История скачиваний</a>
+              </li>
+              <li class="header__item">
+                <a href="#!" class="header__link">Контакты</a>
+              </li>
+            </ui>
+          </nav>
+        </div>
       </div>
-    </div>
+    </header>
+
+    <main class="main">
+      <!-- intro start -->
+      <section class="intro">
+        <div class="wrapper">
+          <div class="intro__wrapper">
+            <h1 class="intro__title">Музыка с YouTube</h1>
+            <p class="intro__subtitle">
+              Скачайте музыку бесплатно с видеохостинга YouTube. Всё что нужно,
+              это ввести ссылку на необходимое видео и программа всё сделает
+              сама.
+            </p>
+            <form
+              id="getLink"
+              action="/"
+              method="post"
+              name="main"
+              class="main-form"
+            >
+              <div class="main-form__wrapper">
+                <div class="main-form__item">
+                  <label for="nameInput" class="main-form__label"
+                    >Введите ссылку на видео YouTube и получите mp3!</label
+                  >
+                  <input
+                    tabindex="1"
+                    value=""
+                    id="nameInput"
+                    type="text"
+                    name="name"
+                    class="main-form__input"
+                    autocomplete="on"
+                    placeholder="http://..."
+                  />
+                </div>
+                <div class="btn">
+                  <button
+                    type="submit"
+                    id="submitButton"
+                    class="main-form__button"
+                  >
+                    Отправить
+                  </button>
+                </div>
+                <!-- output block start -->
+
+                <div class="message__container">
+                  <div class="message" id="result"></div>
+                  <div id="status"></div>
+                  <!-- output block end -->
+                </div>
+              </div>
+              <div class="return__container">
+                <a class="return" id="arrow" href="/">Вернуться</a>
+              </div>
+            </form>
+            <a class="hidden-link" href="/download" download="">Download</a>
+          </div>
+        </div>
+      </section>
+      <!-- intro end -->
+    </main>
     <script src="/dynamicMessage.js"></script>
   </body>
 </html>
