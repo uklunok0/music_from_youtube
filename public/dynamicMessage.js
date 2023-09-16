@@ -10,7 +10,7 @@ const statusElement = document.getElementById("status");
 
 async function sendRequestAndUpdateResult(url, data) {
   try {
-    const statusIntervalId = showAnimation();
+    showAnimation();
 
     // Отправка запроса к серверу с данными из формы и получение результата от сервера
     const response = await axios.post(url, data);
@@ -31,9 +31,8 @@ async function sendRequestAndUpdateResult(url, data) {
       // Обновление содержимого элемента div с заданным id с результатом работы функции на сервере
       resultDiv.innerHTML = resultData;
     }
-    clearInterval(statusIntervalId);
-    statusElement.innerHTML = "";
-    //return resultDataCut;
+
+    closeAnimation();
   } catch (error) {
     console.error(error);
   }
@@ -76,15 +75,18 @@ const handleSubmit = async function (e) {
 
   const dataCut0 = data.name.substring(0, 20);
   const dataCut1 = data.name.substring(0, 12);
+  const dataCut2 = data.name.substring(0, 17);
 
   if (
     dataCut0 == "https://www.youtube." ||
     dataCut0 == "https://youtube.com/" ||
-    dataCut1 == "www.youtube."
+    dataCut0 == "https://m.youtube.co" ||
+    dataCut1 == "www.youtube." ||
+    dataCut2 == "https://youtu.be/"
   ) {
     document.getElementById("submitButton").remove(); // удалить кнопку если запрос отправлен на youtube
   } else {
-    console.log(dataCut0 || dataCut1);
+    console.log(dataCut0 || dataCut1 || dataCut2);
   }
 
   await sendRequestAndUpdateResult("/", data); // отправить запрос на локальный сервер и вывести результат на страницу
@@ -115,14 +117,35 @@ const btnSubmit = async function () {
 
 // анимация в момент запроса данных
 function showAnimation() {
-  let animation = "pending";
-  let intervalId = setInterval(() => {
-    statusElement.innerHTML = animation;
-    animation += ".";
-    if (animation.length > 10) {
-      animation = "pending";
-    }
-  }, 200);
-
-  return intervalId;
+  statusElement.className = "loadingio-spinner-ellipsis-29linrtctor";
 }
+function closeAnimation() {
+  statusElement.classList.remove("loadingio-spinner-ellipsis-29linrtctor");
+}
+
+//автовызываемая функция затемнения навигационного бара по скроллингу
+(function () {
+  const header = document.getElementsByClassName("header")[0];
+
+  window.onscroll = function () {
+    if (window.pageYOffset > 50) {
+      header.classList.add("header__active");
+    } else {
+      header.classList.remove("header__active");
+    }
+  };
+})();
+
+//burger handler
+
+(function () {
+  const burgerItem = document.querySelector(".header__burger");
+  const menu = document.querySelector(".header__nav");
+  const menuClose = document.querySelector(".header__nav_close");
+  burgerItem.addEventListener("click", () => {
+    menu.classList.add("header__nav_active");
+  });
+  menuClose.addEventListener("click", () => {
+    menu.classList.remove("header__nav_active");
+  });
+})();

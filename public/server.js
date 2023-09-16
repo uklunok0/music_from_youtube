@@ -1,11 +1,11 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const ytdl = require("ytdl-core");
+const ytdl = require("node-ytdl-core");
 const ffmpeg = require("fluent-ffmpeg");
 const readline = require("readline");
-const { log, error } = require("console");
 const path = require("path");
 const fs = require("fs");
+const os = require("os");
 
 const validateUrl = require("./validateURL");
 const getTitle = require("./getTitleVideo");
@@ -15,6 +15,7 @@ const app = express();
 const port = 3000;
 
 //let videoTitle = "";
+let tempNameFile;
 
 app.set("view engine", "ejs");
 
@@ -88,15 +89,16 @@ app.post("/data", (req, res) => {
 
   const getStream = async (link) => {
     // ф-ция получения и обработки видеопотока
-
+    tempNameFile = generateRandomName();
+    const setFfmpegPath = selFfmpegPath();
     try {
       let stream = await ytdl(link, { quality: "highestaudio" }); // получить видеопоток по ссылке
-      ffmpeg.setFfmpegPath("./ffmpeg/bin/ffmpeg.exe");
+      ffmpeg.setFfmpegPath(setFfmpegPath);
 
       const currentPath = path.join(
         __dirname,
         "Downloads",
-        `${randomName}.mp3`
+        `${tempNameFile}.mp3`
       );
       let start = Date.now();
       ffmpeg(stream) // преобразование видеопотока в *mp3
@@ -122,7 +124,7 @@ app.post("/data", (req, res) => {
 });
 
 app.get("/download", async (req, res) => {
-  const currentPath = path.join(__dirname, "Downloads", `${randomName}.mp3`);
+  const currentPath = path.join(__dirname, "Downloads", `${tempNameFile}.mp3`);
 
   res.download(currentPath, `${videoTitle}.mp3`, function (err) {
     if (err) {
@@ -140,31 +142,31 @@ app.get("/download", async (req, res) => {
 
   /* ffmpeg.setFfmpegPath("./ffmpeg/bin/ffmpeg.exe");
   const link = req.query.link;
-
+  
   try {
     const info = await ytdl.getInfo(link);
     const format = ytdl.chooseFormat(info.formats, {
       filter: "audioonly",
       quality: "highestaudio",
     });
-
+    
     const stream = ytdl.downloadFromInfo(info, { format: format });
-
+    
     ffmpeg(stream)
-      .output("output.mp3") // здесь можно задать другое имя выходного файла
-      .on("end", () => {
+    .output("output.mp3") // здесь можно задать другое имя выходного файла
+    .on("end", () => {
         const file = fs.createReadStream("output.mp3");
         res.setHeader(
           "Content-Disposition",
           'attachment; filename="output.mp3"'
-        );
-        file.pipe(res);
-      })
-      .run();
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("An error occurred");
-  } */
+          );
+          file.pipe(res);
+        })
+        .run();
+      } catch (error) {
+        console.error(error);
+        res.status(500).send("An error occurred");
+      } */
 });
 
 //функция создания случайного имени файла
@@ -179,8 +181,19 @@ function generateRandomName() {
 
   return name;
 }
-const randomName = generateRandomName();
-console.log(randomName);
+
+function selFfmpegPath() {
+  // Определяем путь к исполняемому файлу ffmpeg в зависимости от операционной системы
+  let ffmpegPath = "";
+  console.log(os.platform());
+
+  if (os.platform() === "win32") {
+    ffmpegPath = "./ffmpeg/bin/ffmpeg.exe"; // Путь к ffmpeg для Windows
+  } else if (os.platform() === "linux") {
+    ffmpegPath = "/usr/bin/ffmpeg"; // Путь к ffmpeg для Linux (это общепринятый путь, но он может быть разным)
+  }
+  return ffmpegPath;
+}
 
 app.listen(port, () => {
   console.log(`Сервер запущен на http://localhost:${port}. Listening...`);

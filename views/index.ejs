@@ -63,7 +63,17 @@
                 <a href="#!" class="header__link">Контакты</a>
               </li>
             </ui>
+            <div class="header__nav_close">
+              <span class="header__nav_close-line"> </span>
+              <span class="header__nav_close-line"> </span>
+            </div>
           </nav>
+
+          <div class="header__burger burger">
+            <span class="burger__line burger__line_first"> </span>
+            <span class="burger__line burger__line_second"> </span>
+            <span class="burger__line burger__line_third"> </span>
+          </div>
         </div>
       </div>
     </header>
@@ -71,64 +81,105 @@
     <main class="main">
       <!-- intro start -->
       <section class="intro">
-        <div class="wrapper">
-          <div class="intro__wrapper">
-            <h1 class="intro__title">Музыка с YouTube</h1>
-            <p class="intro__subtitle">
-              Скачайте музыку бесплатно с видеохостинга YouTube. Всё что нужно,
-              это ввести ссылку на необходимое видео и программа всё сделает
-              сама.
-            </p>
-            <form
-              id="getLink"
-              action="/"
-              method="post"
-              name="main"
-              class="main-form"
-            >
-              <div class="main-form__wrapper">
-                <div class="main-form__item">
-                  <label for="nameInput" class="main-form__label"
-                    >Введите ссылку на видео YouTube и получите mp3!</label
-                  >
-                  <input
-                    tabindex="1"
-                    value=""
-                    id="nameInput"
-                    type="text"
-                    name="name"
-                    class="main-form__input"
-                    autocomplete="on"
-                    placeholder="http://..."
-                  />
-                </div>
-                <div class="btn">
-                  <button
-                    type="submit"
-                    id="submitButton"
-                    class="main-form__button"
-                  >
-                    Отправить
-                  </button>
-                </div>
-                <!-- output block start -->
+        <div class="intro__contain">
+          <div class="wrapper">
+            <div class="intro__wrapper">
+              <h1 class="intro__title">Музыка с YouTube</h1>
+              <p class="intro__subtitle">
+                Скачайте музыку бесплатно с видеохостинга YouTube. Всё что
+                нужно, это ввести ссылку на необходимое видео и программа всё
+                сделает сама.
+              </p>
+              <form
+                id="getLink"
+                action="/"
+                method="post"
+                name="main"
+                class="main-form"
+              >
+                <div class="main-form__wrapper">
+                  <div class="main-form__item">
+                    <label for="nameInput" class="main-form__label"
+                      >Введите ссылку на видео YouTube и получите mp3!</label
+                    >
+                    <input
+                      tabindex="1"
+                      value=""
+                      id="nameInput"
+                      type="text"
+                      name="name"
+                      class="main-form__input"
+                      autocomplete="on"
+                      placeholder="http://..."
+                    />
+                  </div>
+                  <div class="btn">
+                    <button
+                      type="submit"
+                      id="submitButton"
+                      class="main-form__button"
+                    >
+                      Отправить
+                    </button>
+                  </div>
+                  <!-- output block start -->
 
-                <div class="message__container">
-                  <div class="message" id="result"></div>
-                  <div id="status"></div>
-                  <!-- output block end -->
+                  <div class="message__container">
+                    <div class="message" id="result"></div>
+                    <!-- output block end -->
+                  </div>
                 </div>
-              </div>
-              <div class="return__container">
-                <a class="return" id="arrow" href="/">Вернуться</a>
-              </div>
-            </form>
-            <a class="hidden-link" href="/download" download="">Download</a>
+
+                <div class="return__container">
+                  <a class="return" id="arrow" href="/">Вернуться</a>
+                </div>
+
+                <div class="status__container">
+                  <!-- <div id="status"></div> -->
+                  <div id="status">
+                    <div class="ldio-7cx3aq7aua5">
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+              <a class="hidden-link" href="/download" download="">Download</a>
+            </div>
           </div>
         </div>
       </section>
       <!-- intro end -->
     </main>
+
+    <footer class="footer">
+      <div class="footer__frame">
+        <p></p>
+      </div>
+      <div class="wrapper">
+        <div class="footer__item">
+          <a href="#!" class="footer__pic__twitter hover__img">
+            <img src="../svg/twitter-icon.svg" alt="twitter-icon" />
+          </a>
+          <a href="#!" class="footer__pic__instagram hover__img">
+            <img src="../svg/instagram-icon.svg" alt="instagram-icon" />
+          </a>
+          <a href="#!" class="footer__pic__twitch hover__img">
+            <img src="../svg/twitch-icon.svg" alt="twitch-icon" />
+          </a>
+          <a href="#!" class="footer__pic__telegram hover__img">
+            <img src="../svg/telegram-icon.svg" alt="telegram-icon" />
+          </a>
+        </div>
+        <div class="footer__text">
+          <h3>Все права защищены © 2023, Музыка с youtube</h3>
+        </div>
+      </div>
+    </footer>
+
     <script src="/dynamicMessage.js"></script>
   </body>
 </html>

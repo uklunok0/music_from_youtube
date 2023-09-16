@@ -1,4 +1,4 @@
-const ytdl = require("ytdl-core");
+const ytdl = require("node-ytdl-core");
 
 const getVideoInfo = async (link) => {
   try {
@@ -20,7 +20,7 @@ const getVideoInfo = async (link) => {
     // получить превью видео
     const thumbnailUrl =
       info.player_response.videoDetails.thumbnail.thumbnails[0].url;
-
+    console.log(fileSize);
     return [fileSize, thumbnailUrl, lengthFileInt, lengthFileFloat];
   } catch (error) {
     console.error(error);

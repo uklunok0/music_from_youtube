@@ -18,9 +18,12 @@ function validateUrl(data) {
     }
 
     const notYouTubeLink = data.substring(0, 20);
+    const notYouTubeLink0 = data.substring(0, 17);
     if (
       notYouTubeLink !== "https://www.youtube." &&
-      notYouTubeLink !== "https://youtube.com/"
+      notYouTubeLink !== "https://youtube.com/" &&
+      notYouTubeLink !== "https://m.youtube.co" &&
+      notYouTubeLink0 !== "https://youtu.be/"
     ) {
       responseHTML = "Это не ссылка YouTube!";
       return responseHTML;
