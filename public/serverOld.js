@@ -107,8 +107,10 @@ app.post("/data", (req, res) => {
         .on("progress", (p) => {
           readline.cursorTo(process.stdout, 0); // перемещает курсор в начало строки
           process.stdout.write(`${p.targetSize}kb downloaded`);
+          targetSize = p.targetSize;
         })
         .on("end", () => {
+          targetSize = 1111; // сигнал к закрытию соединения EventSource
           console.log(`\ndone, thanks - ${(Date.now() - start) / 1000}s`);
           responseHTML = `\nФайл успешно скачан, затрачено времени - ${
             (Date.now() - start) / 1000

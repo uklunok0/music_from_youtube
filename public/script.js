@@ -16,7 +16,7 @@ async function sendRequestAndUpdateResult(url, data) {
     const response = await axios.post(url, data);
     const resultData = response.data;
 
-    const resultDataCut = resultData.substring(0, 8); // запретить редактирование ссылки на видео
+    const resultDataCut = resultData.substring(0, 8);
     if (resultDataCut == "Название") {
       // Создаем элемент плашки
       resultDivWrap.className = "messageWrap";
@@ -25,8 +25,8 @@ async function sendRequestAndUpdateResult(url, data) {
       container.appendChild(resultDivWrap);
       resultDivWrap.innerHTML = resultData;
 
-      console.log("win2!");
-      nameInput.setAttribute("readonly", true);
+      //console.log("win2!");
+      nameInput.setAttribute("readonly", true); // запретить редактирование ссылки на видео
     } else {
       // Обновление содержимого элемента div с заданным id с результатом работы функции на сервере
       resultDiv.innerHTML = resultData;
@@ -98,18 +98,37 @@ form.addEventListener("submit", handleSubmit);
 // Обработчик события клика по созданной кнопке для отправки запроса на youtube
 const btnSubmit = async function () {
   console.log("win-0!");
-  document.getElementById("confirmButton").remove(); // удалить кнопку если запрос отправлен на youtube на скачивание
-  document.getElementById("arrow").style.display = "none"; // скрыть ссылку возвращения на начальный маршрут
+  document.getElementById("confirmButton").remove();
+  document.getElementById("arrow").style.display = "none";
   resultDiv.innerHTML = "Дождитесь загрузки файла на сервер!";
+
   const data = {
     name: nameInput.value,
+  };
+
+  const eventSource = new EventSource("/progress"); // Используем SSE для получения данных о прогрессе загрузки
+
+  eventSource.onmessage = function (event) {
+    const data = JSON.parse(event.data); // Парсим JSON данные от сервера
+    if (event.data == 1111) {
+      eventSource.close(); // закрыть соединение
+    } else {
+      console.log("Target size:", data);
+    }
+  };
+
+  eventSource.onerror = function (error) {
+    console.error("Ошибка SSE:", error);
+  };
+
+  eventSource.onopen = function () {
+    console.log("Подключение к серверу SSE установлено");
   };
 
   await sendRequestAndUpdateResult("/data", data);
 
   if (downloadLink) {
     document.getElementById("arrow").style.display = "";
-    // автоматический вызов окна сохранения
     downloadLink.addEventListener("click", function () {});
     downloadLink.click();
   }

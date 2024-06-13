@@ -1,5 +1,3 @@
-const axios = require("axios");
-
 function validateUrl(data) {
   try {
     // ф-ция проверки корректного ввода данных в форму
